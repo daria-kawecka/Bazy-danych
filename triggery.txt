@@ -1,0 +1,54 @@
+#zad1
+
+CREATE PROCEDURE Fib
+(
+@element INT
+)
+
+AS 
+DECLARE @fib INT=0;
+DECLARE @l1 INT=0;
+DECLARE @l2 INT=1;
+DECLARE @pom INT;
+
+IF @element = 1
+BEGIN
+ SET @fib=0 ;
+END;
+ELSE 
+BEGIN
+	WHILE @element-1 > 1
+	BEGIN
+	 SET @fib = @l1 + @l2;
+	 SET @l1 = @l2;
+	 SET @l2 = @fib;
+	 SET @element = @element-1;
+	END;
+END;
+SELECT @fib as Ciag_Fibonacciego;
+RETURN;
+
+#zad2
+
+CREATE  TRIGGER trigging ON AdventureWorks2017.Person.Person 
+FOR UPDATE AS
+UPDATE Person SET LastName=upper(LastName)
+
+#zad3
+
+CREATE TRIGGER taxRateMonitoring ON AdventureWorks2017.Sales.SalesTaxRate
+AFTER UPDATE AS
+BEGIN
+SET NOCOUNT ON;
+ DECLARE @new FLOAT;
+ DECLARE @old FLOAT;
+ SELECT @new = TaxRate FROM inserted
+ SELECT @old = TaxRate FROM deleted
+ 
+ IF ((@new > @old + 0.3*@old) OR (@new < @old - 0.3*@old))
+  BEGIN
+     print 'Error'
+     ROLLBACK
+     RETURN
+  END;
+ END;
